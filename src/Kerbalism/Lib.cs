@@ -1364,7 +1364,6 @@ namespace KERBALISM
 		///<summary>return true if a tutorial scenario or making history mission is active</summary>
 		public static bool IsScenario()
 		{
-			Log("KB1 IsScenario: HighLogic.CurrentGame.Mode=" + HighLogic.CurrentGame.Mode.ToString());
 			return HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO
 				|| HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO_NON_RESUMABLE
 				|| HighLogic.CurrentGame.Mode == Game.Modes.MISSION_BUILDER
@@ -1374,13 +1373,12 @@ namespace KERBALISM
 		///<summary>disable the module and return true if a tutorial scenario is active</summary>
 		public static bool DisableScenario(PartModule m)
 		{
-			Log("KB1 DisableScenario");/*
 			if (IsScenario())
 			{
 				m.enabled = false;
 				m.isEnabled = false;
 				return true;
-			}*/
+			}
 			return false;
 		}
 
