@@ -243,6 +243,9 @@ namespace KERBALISM
 
 	public class PreferencesComfort : GameParameters.CustomParameterNode
 	{
+		[GameParameters.CustomParameterUI("Depressurization Hazards", toolTip = "Depressurization can kill you with freezing or suffocation")]//Depressurization Hazards--Depressurization can kill you with freezing or suffocation
+		public bool depressurizationHazards = false;
+
 		[GameParameters.CustomParameterUI("#KERBALISM_StressBreakdowns", toolTip = "#KERBALISM_StressBreakdowns_desc")]//Stress Breakdowns--Kerbals can make mistakes when they're under stress
 		public bool stressBreakdowns = false;
 
@@ -279,18 +282,22 @@ namespace KERBALISM
 			switch (preset)
 			{
 				case GameParameters.Preset.Easy:
+					depressurizationHazards = false;
 					stressBreakdowns = false;
 					stressBreakdownRate = 0.2f;
 					break;
 				case GameParameters.Preset.Normal:
+					depressurizationHazards = false;
 					stressBreakdowns = true;
 					stressBreakdownRate = 0.25f;
 					break;
 				case GameParameters.Preset.Moderate:
+					depressurizationHazards = false;
 					stressBreakdowns = true;
 					stressBreakdownRate = 0.3f;
 					break;
 				case GameParameters.Preset.Hard:
+					depressurizationHazards = true;
 					stressBreakdowns = true;
 					stressBreakdownRate = 0.35f;
 					break;

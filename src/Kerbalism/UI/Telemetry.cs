@@ -108,8 +108,13 @@ namespace KERBALISM
 				if (Features.Shielding) p.AddContent(Local.TELEMETRY_shielding, Habitat.Shielding_to_string(vd.Shielding));//"shielding"
 				if (Features.LivingSpace) p.AddContent(Local.TELEMETRY_livingspace, Habitat.Living_space_to_string(vd.LivingSpace));//"living space"
 				if (Features.Comfort) p.AddContent(Local.TELEMETRY_comfort, vd.Comforts.Summary(), vd.Comforts.Tooltip());//"comfort"
-				if (Features.Pressure && Settings.LifeSupportAtmoLoss > 0) p.AddContent(Local.TELEMETRY_EVATips1, null, Local.TELEMETRY_EVATips2);
-				//if (Features.Pressure && Settings.LifeSupportAtmoLoss > 0) p.AddContent(Local.TELEMETRY_EVAsavailable, vd.EnvBreathable ? Local.TELEMETRY_EnvBreathable : Lib.HumanReadableInteger(vd.Evas), vd.EnvBreathable ? Local.TELEMETRY_Breathableatm : Local.TELEMETRY_approx);//"EVA's available""infinite""breathable atmosphere""approx (derived from stored N2)"
+				//if (Features.Pressure && Settings.LifeSupportAtmoLoss > 0) p.AddContent(Local.TELEMETRY_EVATips1, null, Local.TELEMETRY_EVATips2);
+				if (Features.Pressure && !vd.EnvBreathable && Settings.LifeSupportAtmoLoss > 0)  // KB1
+				{
+					//"EVA's available""infinite""breathable atmosphere""approx (derived from Atmo and stored N2)"
+					p.AddContent("EVAs until repressurization", Lib.HumanReadableInteger(vd.EvasRepressurize), $"Repressurization of the habitat using Pressure Controllers will occur when pressure is below {Settings.PressureThreshold * 100}%");
+					p.AddContent(Local.TELEMETRY_EVAsavailable, Lib.HumanReadableInteger(vd.Evas), $"For each completed EVA (out/in), {Settings.LifeSupportAtmoLoss} units of atmosphere is lost from the habitat.  Atmosphere is replenished from stored Nitrogen using habitat Pressure Control modules.");
+				}
 			}
 		}
 

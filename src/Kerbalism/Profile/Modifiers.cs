@@ -66,6 +66,10 @@ namespace KERBALISM
 						k *= vd.Pressure > Settings.PressureThreshold ? 1.0 : Settings.PressureFactor;
 						break;
 
+					case "pressurizer":
+						k *= vd.Repressurize ? 1.0 : 0.0;
+						break;
+
 					case "poisoning":
 						k *= vd.Poisoning > Settings.PoisoningThreshold ? 1.0 : Settings.PoisoningFactor;
 						break;
