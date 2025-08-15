@@ -102,15 +102,14 @@ namespace KERBALISM
 			p.AddSection(Local.TELEMETRY_HABITAT);//"HABITAT"
 			if (Features.Poisoning) p.AddContent(Local.TELEMETRY_co2level, Lib.Color(vd.Poisoning > Settings.PoisoningThreshold, Lib.HumanReadablePerc(vd.Poisoning, "F2"), Lib.Kolor.Yellow));//"co2 level"
 			if (Features.Radiation && v.isEVA) p.AddContent(Local.TELEMETRY_radiation, Lib.HumanReadableRadiation(vd.EnvHabitatRadiation));//"radiation"
-
+			if (Features.Pressure) p.AddContent(Local.TELEMETRY_pressure, Lib.HumanReadablePressure(vd.Pressure * Sim.PressureAtSeaLevel()));//"pressure" KB1
 			if (!v.isEVA)
 			{
-				if (Features.Pressure) p.AddContent(Local.TELEMETRY_pressure, Lib.HumanReadableNormalizedPressure(vd.Pressure));//"pressure"
-				if (Features.Shielding) p.AddContent(Local.TELEMETRY_shielding, Lib.HumanReadableShieldingLevel(vd.Shielding));//"shielding"
-				if (Features.LivingSpace) p.AddContent(Local.TELEMETRY_livingspace, Lib.HumanReadableLivingSpace(vd.LivingSpace));//"living space"
+				if (Features.Shielding) p.AddContent(Local.TELEMETRY_shielding, Habitat.Shielding_to_string(vd.Shielding));//"shielding"
+				if (Features.LivingSpace) p.AddContent(Local.TELEMETRY_livingspace, Habitat.Living_space_to_string(vd.LivingSpace));//"living space"
 				if (Features.Comfort) p.AddContent(Local.TELEMETRY_comfort, vd.Comforts.Summary(), vd.Comforts.Tooltip());//"comfort"
-				if (Features.Pressure && Settings.LifeSupportAtmoLoss > 0)
-					p.AddContent(Local.TELEMETRY_EVAStatus, vd.Evas > 1 ? Local.TELEMETRY_EVAStatus1 : Local.TELEMETRY_EVAStatus2, null); // "EVA Status" / "safe" / "risky"
+				if (Features.Pressure && Settings.LifeSupportAtmoLoss > 0) p.AddContent(Local.TELEMETRY_EVATips1, null, Local.TELEMETRY_EVATips2);
+				//if (Features.Pressure && Settings.LifeSupportAtmoLoss > 0) p.AddContent(Local.TELEMETRY_EVAsavailable, vd.EnvBreathable ? Local.TELEMETRY_EnvBreathable : Lib.HumanReadableInteger(vd.Evas), vd.EnvBreathable ? Local.TELEMETRY_Breathableatm : Local.TELEMETRY_approx);//"EVA's available""infinite""breathable atmosphere""approx (derived from stored N2)"
 			}
 		}
 

@@ -156,21 +156,22 @@ namespace KERBALISM
 				// if continuous, or if one or more intervals elapsed
 				if (step > 0.0)
 				{
-					bool pressureProblem = false;
-					if (Features.Pressure && PreferencesComfort.Instance.depressurizationHazards && problemPressure > 0)
+					// if problemPressure
+					bool lowPressure = false;
+					if (problemPressure > 0)
 					{
 						double atmo = resources.GetResource(v, "Atmosphere").Amount;
 						if (v.isEVA && vd.Pressure < problemPressure) // EVA: low suit pressure
 						{
 							Message.Post(Severity.danger, "Low Suit Pressure", "Return to habitat immediately!");
-							pressureProblem = true;
+							lowPressure = true;
 						}
 						if (!v.isEVA && atmo / (330 * v.GetCrewCount()) < problemPressure) // Habitat: low Atmosphere
 						{
 							Message.Post(Severity.danger, "Habitat depressurized", "Not enough Atmosphere to fill EVA suits!");
-							pressureProblem = true;
+							lowPressure = true;
 						}
-						if (pressureProblem)
+						if (lowPressure)
 						{
 							if (name == "climatization") Message.Post(Severity.warning, "Climate control ineffective!", "Replenish Atmosphere");
 							if (name == "breathing") Message.Post(Severity.danger, "DEPRESSURIZED!", "Lungs cannot draw in air");
@@ -180,7 +181,7 @@ namespace KERBALISM
 					// degenerate:
 					// - if the environment modifier is not telling to reset (by being zero)
 					// - if this rule is resource-less, or if there was not enough resource in the vessel
-					if (k > 0.0 && (input.Length == 0 || res.Amount <= double.Epsilon || pressureProblem))
+					if (k > 0.0 && (input.Length == 0 || res.Amount <= double.Epsilon || lowPressure))
 					{
 						rd.problem += degeneration           // degeneration rate per-second or per-interval
 								   * k                       // product of environment modifiers
