@@ -363,8 +363,12 @@ namespace KERBALISM
 		/// <summary>normalized pressure</summary>
 		public double Pressure => habitatInfo.HabNormalizedPressure;
 
-		/// <summary>number of EVA's using available Nitrogen</summary>
+		/// <summary>number of EVAs available using Atmosphere and Nitrogen</summary>
 		public uint Evas => evas; uint evas;
+		/// <summary>number of EVAs until below PressureThreshold</summary>
+		public uint EvasRepressurize => evas_r; uint evas_r;
+		/// <summary>pressure controller only active if below Settings.PressureThreshold</summary>
+		public bool Repressurize => repressurize; bool repressurize;   
 
 		/// <summary>waste atmosphere amount versus total atmosphere amount</summary>
 		public double Poisoning => habitatInfo.HabPoisoning;
@@ -903,8 +907,30 @@ namespace KERBALISM
 			CommHandler.UpdateConnection(connection);
 
 			// habitat data
-			habitatInfo.Update(Vessel, this, elapsedSeconds);
-			evas = (uint)(Settings.LifeSupportAtmoLoss > 0 ? (ResourceCache.GetResource(Vessel, "Nitrogen").Amount - 330) / Settings.LifeSupportAtmoLoss : 0);
+			habitatInfo.Update(Vessel);
+			volume = Habitat.Tot_volume(Vessel);
+			surface = Habitat.Tot_surface(Vessel);
+			pressure = Math.Min(Habitat.Pressure(Vessel), habitatInfo.MaxPressure);
+
+			// KB1
+			// PRESSURIZATION SYSTEM (KB1)
+			if (pressure < Settings.PressureThreshold) repressurize = true;
+			if (pressure > 0.999) repressurize = false;
+			double atmoMin = ResourceCache.GetResource(Vessel, "Atmosphere").Capacity * Settings.PressureThreshold;
+			double atmoAmount = ResourceCache.GetResource(Vessel, "Atmosphere").Amount;
+			double N2Amount = ResourceCache.GetResource(Vessel, "Nitrogen").Amount;
+			double borrowedAtmo = 0;
+			foreach (Vessel v in FlightGlobals.VesselsLoaded)
+			{
+				if (v.isEVA) borrowedAtmo += 330;
+			}
+			evas_r = (uint)(Settings.LifeSupportAtmoLoss > 0 ? Math.Max(Math.Ceiling((atmoAmount + borrowedAtmo - atmoMin) / Settings.LifeSupportAtmoLoss), 0) : 0);
+			evas = (uint)(Settings.LifeSupportAtmoLoss > 0 ? Math.Ceiling((atmoAmount + borrowedAtmo + N2Amount) / Settings.LifeSupportAtmoLoss) : 0);
+
+			poisoning = Habitat.Poisoning(Vessel);
+			shielding = Habitat.Shielding(Vessel);
+			livingSpace = Habitat.Living_space(Vessel);
+			volumePerCrew = Habitat.Volume_per_crew(Vessel);
 			comforts = new Comforts(Vessel, EnvLanded, crewCount > 1, connection.linked && connection.rate > double.Epsilon);
 
 			// data about greenhouses
