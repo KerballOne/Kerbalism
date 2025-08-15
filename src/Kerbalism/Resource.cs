@@ -1229,6 +1229,7 @@ namespace KERBALISM
 		// Method don't count disabled habitats
 		public static void Equalizer(Vessel v)
 		{
+			return; // KB1
 			// get resource level in habitats
 			double[] res_level = new double[resourceName.Length];                   // Don't count Manned or Depressiong habitats
 

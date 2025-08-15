@@ -17,6 +17,7 @@ namespace KERBALISM
 			interval = Lib.ConfigValue(node, "interval", 0.0);
 			rate = Lib.ConfigValue(node, "rate", 0.0);
 			ratio = Lib.ConfigValue(node, "ratio", 0.0);
+			problemPressure = Lib.ConfigValue(node, "problemPressure", 0.0);
 			degeneration = Lib.ConfigValue(node, "degeneration", 0.0);
 			variance = Lib.ConfigValue(node, "variance", 0.0);
 			individuality = Lib.ConfigValue(node, "individuality", 0.0);
@@ -151,10 +152,32 @@ namespace KERBALISM
 				// if continuous, or if one or more intervals elapsed
 				if (step > 0.0)
 				{
+					// if problemPressure
+					bool lowPressure = false;
+					if (problemPressure > 0)
+					{
+						double atmo = resources.GetResource(v, "Atmosphere").Amount;
+						if (v.isEVA && vd.Pressure < problemPressure) // EVA: low suit pressure
+						{
+							Message.Post(Severity.danger, "Low Suit Pressure", "Return to habitat immediately!");
+							lowPressure = true;
+						}
+						if (!v.isEVA && atmo / (330 * v.GetCrewCount()) < problemPressure) // Habitat: low Atmosphere
+						{
+							Message.Post(Severity.danger, "Habitat depressurized", "Not enough Atmosphere to fill EVA suits!");
+							lowPressure = true;
+						}
+						if (lowPressure)
+						{
+							if (name == "climatization") Message.Post(Severity.warning, "Climate control ineffective!", "Replenish Atmosphere");
+							if (name == "breathing") Message.Post(Severity.danger, "DEPRESSURIZED!", "Lungs cannot draw in air");
+						}
+					}
+
 					// degenerate:
 					// - if the environment modifier is not telling to reset (by being zero)
 					// - if this rule is resource-less, or if there was not enough resource in the vessel
-					if (k > 0.0 && (input.Length == 0 || res.Amount <= double.Epsilon))
+					if (k > 0.0 && (input.Length == 0 || res.Amount <= double.Epsilon || lowPressure))
 					{
 						rd.problem += degeneration           // degeneration rate per-second or per-interval
 								   * k                       // product of environment modifiers
@@ -281,6 +304,7 @@ namespace KERBALISM
 		public double interval;           // if 0 the rule is executed per-second, else it is executed every 'interval' seconds
 		public double rate;               // amount of input resource to consume at each execution
 		public double ratio;              // ratio of output resource in relation to input consumed
+		public double problemPressure;    // minimum vessel pressure needed, below which will cause a problem
 		public double degeneration;       // amount to add to the degeneration at each execution (when we must degenerate)
 		public double variance;           // variance for degeneration rate, unique per-kerbal and in range [1.0-x, 1.0+x]
 		public double individuality;      // variance for process rate, unique per-kerbal and in range [1.0-x, 1.0+x]
