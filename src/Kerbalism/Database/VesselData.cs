@@ -911,8 +911,7 @@ namespace KERBALISM
 			surface = Habitat.Tot_surface(Vessel);
 			pressure = Math.Min(Habitat.Pressure(Vessel), habitatInfo.MaxPressure);
 
-			// KB1
-			// PRESSURIZATION SYSTEM (KB1)
+			// calculate EVAs available based on Atmosphere and stored Nitrogen, and based on Atmosphere until repressurization
 			if (pressure < Settings.PressureThreshold) repressurize = true;
 			if (pressure > 0.999) repressurize = false;
 			double atmoMin = ResourceCache.GetResource(Vessel, "Atmosphere").Capacity * Settings.PressureThreshold;
