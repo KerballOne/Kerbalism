@@ -363,6 +363,7 @@ namespace KERBALISM.Planner
 		private void Process_process_vessel_wide(Process pr, EnvironmentAnalyzer env, VesselAnalyzer va)
 		{
 			// evaluate modifiers
+			pr.modifiers.RemoveAll(m => m == "pressurizer");
 			double k = Modifiers.Evaluate(env, va, this, pr.modifiers);
 			Process_process_inner_body(k, null, pr, env, va);
 		}

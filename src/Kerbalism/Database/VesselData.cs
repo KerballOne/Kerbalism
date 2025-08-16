@@ -923,7 +923,7 @@ namespace KERBALISM
 			{
 				if (v.isEVA) borrowedAtmo += 330;
 			}
-			evas_r = (uint)(Settings.LifeSupportAtmoLoss > 0 ? Math.Max(Math.Ceiling((atmoAmount + borrowedAtmo - atmoMin) / Settings.LifeSupportAtmoLoss), 0) : 0);
+			evas_r = (uint)(Settings.LifeSupportAtmoLoss > 0 ? Math.Max(Math.Ceiling((atmoAmount + borrowedAtmo - 330 - atmoMin) / Settings.LifeSupportAtmoLoss), 0) : 0);
 			evas = (uint)(Settings.LifeSupportAtmoLoss > 0 ? Math.Ceiling((atmoAmount + borrowedAtmo + N2Amount) / Settings.LifeSupportAtmoLoss) : 0);
 
 			poisoning = Habitat.Poisoning(Vessel);
