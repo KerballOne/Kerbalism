@@ -259,10 +259,10 @@ namespace KERBALISM
             // - module is added to an existing savegame
             if (!part.Resources.Contains("Atmosphere"))
             {
-                // add internal atmosphere resources
-                // - disabled habitats start with zero atmosphere
-                Lib.AddResource(part, "Atmosphere", (state == State.enabled && Features.Pressure) ? volume * 1e3 : 0.0, volume * 1e3);
-                Lib.AddResource(part, "WasteAtmosphere", 0.0, volume * 1e3);
+				// add internal atmosphere resources
+				// - disabled habitats start with zero atmosphere
+				PartResource AtmosphereRes = Lib.AddResource(part, "Atmosphere", (state == State.enabled && Features.Pressure) ? volume * 1e3 : 0.0, volume * 1e3);
+				PartResource WasteAtmosphereRes = Lib.AddResource(part, "WasteAtmosphere", 0.0, volume * 1e3);
 
                 // add external surface shielding
                 PartResource shieldingRes = Lib.AddResource(part, "Shielding", 0.0, surface);
@@ -273,7 +273,11 @@ namespace KERBALISM
 				// if shielding feature is disabled, just hide it
 				shieldingRes.isVisible = Features.Shielding && shieldingRes.isTweakable;
 
-                configured = true;
+				// make Atmosphere and WasteAtmosphere visible
+				AtmosphereRes.isVisible = Features.Pressure;
+				WasteAtmosphereRes.isVisible = Features.Pressure;
+
+				configured = true;
             }
         }
 
