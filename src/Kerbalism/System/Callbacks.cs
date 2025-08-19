@@ -213,7 +213,7 @@ namespace KERBALISM
 			}
 
 			// Airlock loss
-			resources.Consume(data.from.vessel, "Atmosphere", Settings.LifeSupportAtmoLoss, ResourceBroker.Generic);
+			resources.Consume(data.from.vessel, Habitat.AtmoResName, Settings.LifeSupportAtmoLoss, ResourceBroker.Generic);
 
 			KerbalEVA kerbal = data.to.FindModuleImplementing<KerbalEVA>();
 
